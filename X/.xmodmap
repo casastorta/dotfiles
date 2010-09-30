@@ -1,0 +1,22 @@
+!
+! Swap Caps_Lock and Control_L
+! (Sun style yeah!)
+!
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+
+! Remove lousy HP Shift_R positioning and assign it to Windows Menu key
+! clear Shift_R
+remove Shift = Shift_R
+keycode 117 = Shift_R
+add Shift = Shift_R
+keycode 62 =
+
+! Assign cursor up to "lousy shift"
+!keysym crsr_up = 98
+!keycode 62 = crsr_up
+
