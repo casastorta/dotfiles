@@ -1,9 +1,9 @@
-// More width for wide-screen display
+/* More width for wide-screen display */
 .entry .entry-body, .entry .entry-title {
-      max-width: 75% !important;
-   }
+   max-width: 75% !important;
+}
 
-// Typeface tuning for better readability
+/* Typeface tuning for better readability */
 div.item-body * {
    font-face: "PT Sans", "DejaVu Sans", "Segoe UI", "Lucida Grande", Tahoma, Helvetica, Arial, sans-serif !important;
    font-weight: 600 !important;
@@ -12,10 +12,10 @@ div.item-body * {
    line-height: 25px !important;
 }
 
-// How to handle images
+/* How to handle images */
 div.item-body img {
    max-width: 100% !important;
-   //float: left !important;
+   /*float: left !important;*/
    clear: both !important;
    margin: 4px 8px 4px 0 !important;
 }
