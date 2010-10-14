@@ -9,7 +9,7 @@ keysym Caps_Lock = Control_L
 add Lock = Caps_Lock
 add Control = Control_L
 
-! Remove lousy HP Shift_R positioning and assign it to Windows Menu key
+! Remove lousy HP Compaq 6820s Shift_R positioning and assign it to Windows Menu key
 ! clear Shift_R
 remove Shift = Shift_R
 keycode 117 = Shift_R
