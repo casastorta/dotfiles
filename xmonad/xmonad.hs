@@ -1,0 +1,1 @@
+/home/vedran/Dropbox/.linuxanja/home/.xmonad-sync/xmonad.hs
