@@ -219,7 +219,8 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 myLayout = avoidStruts (
  withIM (1%10) (Role "buddy_list") $
  withIM (1%11) (Role "gimp-toolbox") $
- withIM (1%9) (Role "gimp-dock")
+ withIM (1%9) (Role "gimp-dock") $
+ withIM (1%3) (ClassName "Thunar")
  (
   maximize (tiled) ||| tall ||| Mirror tall ||| Mirror tiled ||| Accordion ||| Full
  ))
@@ -260,12 +261,17 @@ myManageHook = composeAll
     , className =? "Keepassx"                   --> doFloat
     , className =? "Nm-connection-editor"       --> doFloat
     , className =? "Nm-openconnect-auth-dialog" --> doFloat
+    , className =? "Shotwell"                   --> doFloat
+    , className =? "Xfce4-screenshooter"        --> doFloat
     , className =? "Xfce4-notifyd"              --> doIgnore
     , resource  =? "desktop_window"             --> doIgnore
     , resource  =? "kdesktop"                   --> doIgnore 
     -- Position apps into workspaces
     , className =? "claws-mail"                 --> doShift "mail"
+    , icon      =? "About Claws Mail"           --> doFloat
     , role      =? "compose"                    --> doFloat
+    , icon      =? "Address book"               --> doFloat
+    , icon      =? "Edit Person Details"        --> doFloat
     , icon      =? "Discard message"            --> doFloat
     , className =? "google-chrome"              --> doShift "web:misc"
     , className =? "Pidgin"                     --> doShift "chat"
