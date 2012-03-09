@@ -26,15 +26,18 @@ import XMonad.Layout.PerWorkspace
 import XMonad.Layout.Reflect
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.Accordion
+import XMonad.Hooks.EwmhDesktops
 
 import XMonad.Hooks.ManageHelpers -- for full screen stuff
 import Data.Ratio ((%))
 
+import XMonad.Layout.NoBorders
+import XMonad.Actions.GridSelect
 
 import XMonad.Hooks.ManageDocks
 
---import XMonad.Hooks.FadeInactive
 
+gsconfig1 = defaultGSConfig { gs_cellheight = 64 , gs_cellwidth = 192 }
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -82,8 +85,8 @@ myWorkspaces     = ["mail", "web:misc", "dev", "term1", "term2", "term3", "7", "
 
 -- Border colors for unfocused and focused windows, respectively.
 --
-myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#ff0000"
+myNormalBorderColor  = "#343434"
+myFocusedBorderColor = "#ff6666"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -166,6 +169,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     
     -- to hide/unhide the panel
     , ((modMask              , xK_b), sendMessage ToggleStruts)
+
+    , ((modMask              , xK_g), goToSelected gsconfig1 )
     ]
     ++
 
@@ -216,15 +221,16 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (
- withIM (1%10) (Role "buddy_list") $
- withIM (1%11) (Role "gimp-toolbox") $
- withIM (1%9) (Role "gimp-dock") $
- withIM (1%3) (ClassName "Thunar")
+myLayout = onWorkspace "7" gimpLayout $
+ smartBorders $ avoidStruts $ 
  (
-  maximize (tiled) ||| tall ||| Mirror tall ||| Mirror tiled ||| Accordion ||| Full
- ))
-  where
+   withIM (1%10) (Role "buddy_list") $
+   --withIM (1%3) (ClassName "Thunar") $
+   (
+    maximize (tiled) ||| tall ||| Mirror tall ||| Mirror tiled ||| Accordion 
+    ||| Full ||| gimpLayout
+   ))
+    where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
 
@@ -235,7 +241,10 @@ myLayout = avoidStruts (
      ratio   = 1/2
      -- Percent of screen to increment by when resizing panes
      delta   = 3/100
- 
+     -- Gimp
+     gimpLayout  = withIM (1%10) 
+                   (Role "gimp-toolbox") $ reflectHoriz $ withIM (1%10) 
+                   (Role "gimp-dock") Full
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -254,7 +263,7 @@ myLayout = avoidStruts (
 --
 myManageHook = composeAll
     [ className =? "MPlayer"                    --> doFloat
-    , className =? "Gimp"                       --> doFloat
+    --, className =? "Gimp"                       --> doFloat
     , className =? "Vlc"                        --> doFloat
     , className =? "Xfce4-appfinder"            --> doFloat
     , className =? "Xfrun4"                     --> doFloat
@@ -262,13 +271,16 @@ myManageHook = composeAll
     , className =? "Nm-connection-editor"       --> doFloat
     , className =? "Nm-openconnect-auth-dialog" --> doFloat
     , className =? "Shotwell"                   --> doFloat
+    , className =? "Abrt"                       --> doFloat
     , className =? "Xfce4-screenshooter"        --> doFloat
     , className =? "Xfce4-notifyd"              --> doIgnore
+    , icon      =? "File Operation Progress"    --> doFloat
     , resource  =? "desktop_window"             --> doIgnore
     , resource  =? "kdesktop"                   --> doIgnore 
     -- Position apps into workspaces
     , className =? "claws-mail"                 --> doShift "mail"
     , icon      =? "About Claws Mail"           --> doFloat
+    , icon      =? "Preferences"                --> doFloat
     , role      =? "compose"                    --> doFloat
     , icon      =? "Address book"               --> doFloat
     , icon      =? "Edit Person Details"        --> doFloat
@@ -276,16 +288,22 @@ myManageHook = composeAll
     , className =? "google-chrome"              --> doShift "web:misc"
     , className =? "Pidgin"                     --> doShift "chat"
     , icon      =? "Buddy Information"          --> doFloat
+    , icon      =? "XMPP Message Error"         --> doFloat
+    , icon      =? "Thunderbird Preferences"    --> doFloat
+    , icon      =? "New meeting"                --> doFloat
+    , className =? "Orage"                      --> doFloat
     , className =? "xchat"                      --> doShift "chat"
     , className =? "deluge-gtk"                 --> doShift "warez"
-    , className =? "Eclipse"                    --> doShift "dev"
+    --, className =? "Eclipse"                    --> doShift "dev"
     , className =? "Gimp"                       --> doShift "7" 
-      ] <+> composeOne 
+    ] 
+     <+> composeOne 
     [ isKDETrayWindow -?> doIgnore
     , transience
     , isFullscreen -?> doFullFloat
     , resource =? "stalonetray" -?> doIgnore
-    ] <+> manageDocks
+    ] 
+     <+> manageDocks
  where 
   role = stringProperty "WM_WINDOW_ROLE"
   icon = stringProperty "WM_ICON_NAME"
@@ -341,7 +359,7 @@ defaults = defaultConfig {
         , focusFollowsMouse  = myFocusFollowsMouse
         , borderWidth        = myBorderWidth
         , modMask            = myModMask
-        , numlockMask        = myNumlockMask
+      --  , numlockMask        = myNumlockMask
         , workspaces         = myWorkspaces
         , normalBorderColor  = myNormalBorderColor
         , focusedBorderColor = myFocusedBorderColor
@@ -355,5 +373,5 @@ defaults = defaultConfig {
         --, logHook            = ewmhDesktopsLogHook <+> myLogHook
         , logHook            = ewmhDesktopsLogHook
         , startupHook        = myStartupHook
-        --, handleEventHook    = fullscreenEventHook        
+        , handleEventHook    = fullscreenEventHook        
     }
